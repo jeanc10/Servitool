@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "146367759590",
+    "firebase_url": "https://servitools-897ce.firebaseio.com",
+    "project_id": "servitools-897ce",
+    "storage_bucket": "servitools-897ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146367759590:android:38c333f08cc5aec0182727",
+        "android_client_info": {
+          "package_name": "com.example.servitools_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "146367759590-76u5hbmp159k3cpd58vk3tnau5oin31v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-HRGEeAQQWdYpMhTrnqS7iXktJj4ZQjE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "146367759590-76u5hbmp159k3cpd58vk3tnau5oin31v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

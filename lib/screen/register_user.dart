@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:servitools_app/screen/sign_in.dart';
 import 'package:servitools_app/services/auth.dart';
 import 'globals.dart' as globals;
+import 'package:servitools_app/extensions.dart';
 class Registeruser extends StatefulWidget{
   @override
+
   _RegisteruserState createState() => _RegisteruserState();
 }
 class _RegisteruserState extends State<Registeruser> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String email='',nombreUsuario='',apellido='',ubicacion='',nombreServicio='',orientacion='';
-  String password='',direccion='';
-  String error='';
-  int telefono=0,rtn=0;
+  String password='',direccion='',error='',fundacion='o';
+  int telefono,rtn;
   String _errorMessage;
-  bool _obscureText = true,tieneServicio=false,servicioDomicilio=false,poseeRtn=false;
+  bool _obscureText = true,servicioDomicilio=false,poseeRtn=false;
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nombreController = TextEditingController();
+  final _telefonoController = TextEditingController();
+  final _direccionController = TextEditingController();
+  final _rtnController = TextEditingController();
+  TextEditingController _dateEditingController = TextEditingController();
+  DateTime _fechafundacion = DateTime.now();
+
+
+
   bool _isLoading;
 
   bool _isLoginForm= false;
@@ -41,7 +53,20 @@ class _RegisteruserState extends State<Registeruser> {
     if (validateAndSave()) {
       try {
         if(_formKey.currentState.validate()){
-          dynamic result= await _auth.registerWithEmailAndPass(email, password);
+          dynamic result= await _auth.registerWithEmailAndPasswordEmpresa(
+              email,
+              password,
+              nombreUsuario,
+              apellido,
+              ubicacion,
+              nombreServicio,
+              orientacion,
+              telefono,
+              _fechafundacion,
+              direccion,
+              rtn,
+              servicioDomicilio
+          );
           if(result== null){
             setState(() => _errorMessage = 'Cuenta invalida');
             Fluttertoast.showToast(
@@ -79,7 +104,13 @@ class _RegisteruserState extends State<Registeruser> {
   }
   @override
   void dispose() {
+    _emailController.dispose();
     _passwordController.dispose();
+    _nombreController.dispose();
+    _nombreController.dispose();
+    _telefonoController.dispose();
+    _direccionController.dispose();
+    _rtnController.dispose();
     super.dispose();
   }
 
@@ -90,10 +121,10 @@ class _RegisteruserState extends State<Registeruser> {
     super.initState();
   }
 
-  void resetForm() {
-    _formKey.currentState.reset();
-    _errorMessage = "";
-  }
+//  void resetForm() {
+//    _formKey.currentState.reset();
+//    _errorMessage = "";
+//  }
 
   Widget _showCircularProgress() {
     if (_isLoading) {
@@ -151,12 +182,13 @@ class _RegisteruserState extends State<Registeruser> {
               showNombreServicioInput(),
               showOrientacionInput(),
               showTelefonoInput(),
-              showFechaFundacionInput(),
+              showFechaFundacionInput(context),
+              //_getDatePickerEnabled(),
               showDireccionInput(),
               showRTNInput(),
               showDomicilioInput(),
               showPrimaryButton(context),
-              // showErrorMessage(),
+               showErrorMessage(),
             ],
           ),
         ));
@@ -167,9 +199,10 @@ class _RegisteruserState extends State<Registeruser> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 60.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _emailController,
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
-        autofocus: false,
+        //autofocus: false,
         decoration: InputDecoration(
             hintText: 'Correo eléctronico',
             icon: Icon(
@@ -189,7 +222,7 @@ class _RegisteruserState extends State<Registeruser> {
         controller: _passwordController,
         maxLines: 1,
         obscureText: _obscureText,
-        autofocus: false,
+        //autofocus: false,
         decoration: InputDecoration(
             hintText: 'Contaseña',
             icon: Icon(
@@ -216,9 +249,10 @@ class _RegisteruserState extends State<Registeruser> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _nombreController,
         maxLines: 1,
         keyboardType: TextInputType.text,
-        autofocus: false,
+//        autofocus: false,
         decoration: InputDecoration(
             hintText: 'Nombre',
             icon: Icon(
@@ -236,7 +270,7 @@ class _RegisteruserState extends State<Registeruser> {
       child: TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
-        autofocus: false,
+        //autofocus: false,
         decoration: InputDecoration(
             hintText: 'Apellidos',
             icon: Icon(
@@ -254,7 +288,7 @@ class _RegisteruserState extends State<Registeruser> {
       child: TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
-        autofocus: false,
+        //autofocus: false,
         decoration: InputDecoration(
             hintText: 'Ubicacion',
             icon: Icon(
@@ -272,7 +306,7 @@ class _RegisteruserState extends State<Registeruser> {
       child: TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
-        autofocus: false,
+      //  autofocus: false,
         decoration: InputDecoration(
             hintText: 'Nombre del servicio',
             icon: Icon(
@@ -280,7 +314,7 @@ class _RegisteruserState extends State<Registeruser> {
               color: Colors.green,
             )),
         validator: (value) => value.isEmpty ? 'El campo es requerido' : null,
-        onSaved: (value) => nombreUsuario = value.trim(),
+        onSaved: (value) => nombreServicio = value.trim(),
       ),
     );
   }
@@ -290,7 +324,7 @@ class _RegisteruserState extends State<Registeruser> {
       child: TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
-        autofocus: false,
+       // autofocus: false,
         decoration: InputDecoration(
             hintText: 'Especialidad del servicio',
             icon: Icon(
@@ -298,7 +332,7 @@ class _RegisteruserState extends State<Registeruser> {
               color: Colors.green,
             )),
         validator: (value) => value.isEmpty ? 'El campo es requerido' : null,
-        onSaved: (value) => nombreUsuario = value.trim(),
+        onSaved: (value) => orientacion = value.trim(),
       ),
     );
   }
@@ -306,43 +340,110 @@ class _RegisteruserState extends State<Registeruser> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _telefonoController,
         maxLines: 1,
         keyboardType: TextInputType.number,
-        autofocus: false,
+       // autofocus: false,
         decoration: InputDecoration(
             hintText: 'Telefono',
             icon: Icon(
               Icons.phone,
               color: Colors.green,
             )),
-        validator: (value) => value.length<8 ? 'El telefono debe tener mas digitos' : null,
+        validator: (value) => value.length<1 ? 'El telefono debe tener mas digitos' : null,
+        onSaved: (value) => telefono = num.parse(value),
       ),
     );
   }
-  Widget showFechaFundacionInput() {
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _fechafundacion,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(1970),
+        builder: (context,child){
+          return SingleChildScrollView(child: child);
+        }
+
+    );
+    if(picked!=null){
+      setState(() {
+        _fechafundacion=picked;
+      });
+    }
+  }
+  Widget showFechaFundacionInput(BuildContext context) {
+    String _formateDate = new DateFormat.yMMMd().format(_fechafundacion);
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-      child: TextFormField(
-        maxLines: 1,
-        keyboardType: TextInputType.datetime,
-        autofocus: false,
-        decoration: InputDecoration(
-            hintText: 'Fecha de fundacion',
-            icon: Icon(
-              Icons.calendar_today,
-              color: Colors.green,
-            )),
-        validator: (value) => value.isEmpty ? 'La campo es requerida' : null,
-      ),
-    );
+        padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+        child:
+        TextFormField(
+          readOnly: false,
+          controller: _dateEditingController,
+          decoration:
+          InputDecoration(hintText: 'Fundacion: $_formateDate' ,prefixIcon: Icon(Icons.calendar_today)),
+          onTap: () async {
+            var date = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(1970),
+                lastDate: DateTime.now());
+            if(date!=null){
+              setState(() {
+                _fechafundacion=date;
+              });
+            }
+          },
+        ));
   }
+//  Widget _getDatePickerEnabled() {
+//    return InkWell(
+//      onTap: () {
+//        _selectDate(context);
+//      },
+//      child: InputDecorator(
+//        decoration: InputDecoration(labelText: 'Fecha', enabled: true),
+//        child: Row(
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          mainAxisSize: MainAxisSize.max,
+//          children: <Widget>[
+//            Text(
+//              DateFormat.yMMMd().format(_fechafundacion),
+//            ),
+//            Icon(Icons.arrow_drop_down,
+//                color: Theme.of(context).brightness == Brightness.light
+//                    ? Colors.grey.shade700
+//                    : Colors.white70),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
+//  Future<void> _selectDate(BuildContext context) async {
+//    final DateTime picked = await showDatePicker(
+//        context: context,
+//        initialDate: _fechafundacion,
+//        firstDate: DateTime.now(),
+//        lastDate: DateTime(1970));
+//    }
+
+
+  String _notEmptyField(String value) {
+    if (value.isEmpty) {
+      return 'Este campo es requerido';
+    }
+    return null;
+  }
+
   Widget showDireccionInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _direccionController,
         maxLines: 1,
         keyboardType: TextInputType.text,
-        autofocus: false,
+      //  autofocus: false,
         decoration: InputDecoration(
             hintText: 'Direccion',
             icon: Icon(
@@ -350,7 +451,7 @@ class _RegisteruserState extends State<Registeruser> {
               color: Colors.green,
             )),
         validator: (value) => value.isEmpty ? 'El campo es requerido' : null,
-        onSaved: (value) => nombreUsuario = value.trim(),
+        onSaved: (value) => direccion = value.trim(),
       ),
     );
   }
@@ -358,16 +459,18 @@ class _RegisteruserState extends State<Registeruser> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _rtnController,
         maxLines: 1,
         keyboardType: TextInputType.number,
-        autofocus: false,
+        //autofocus: false,
         decoration: InputDecoration(
             hintText: 'RTN',
             icon: Icon(
               Icons.card_membership,
               color: Colors.green,
             )),
-        validator: (value) => value.length<14 ? 'El RTN debe tener mas digitos' : null,
+        validator: (value) => value.length<1 ? 'El RTN debe tener mas digitos' : null,
+        onSaved: (value) => rtn = num.parse(value),
       ),
     );
   }
@@ -410,35 +513,11 @@ class _RegisteruserState extends State<Registeruser> {
         ));
   }
 
-  void toggleFormMode() {
-    //resetForm();
-    setState(() {
-      _isLoginForm = !_isLoginForm;
-    });
-  }
-  void OcultarInfoServicio(bool opcion){
-    print('en la puerta');
-    if(opcion==true)
-      {
-        print('entro');
-        Widget _showFormEmpresa(BuildContext context) {
-          return Container(
-              padding: EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    showNombreServicioInput()
+//  void toggleFormMode() {
+//    //resetForm();
+//    setState(() {
+//      _isLoginForm = !_isLoginForm;
+//    });
+//  }
 
-                    // showErrorMessage(),
-                  ],
-                ),
-              ));
-        }
-
-
-
-      }
-  }
 }

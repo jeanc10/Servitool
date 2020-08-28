@@ -145,11 +145,11 @@ class _DefinirUsuarioState extends State<DefinirUsuario> {
 
   Future enviarClienteFinal() async {
     globals.isUser='clienteFinal';
-    Navigator.pushNamed(context,'/registerEmpresa');
+    Navigator.pushNamed(context,'/registerUsuario');
   }
   Future enviarEmpresa() async {
     globals.isUser='Emprendedor';
-    Navigator.pushNamed(context,'/registerUsuario');
+    Navigator.pushNamed(context,'/registerEmpresa');
   }
 
 }

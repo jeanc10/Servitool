@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:servitools_app/models/register.dart';
 import 'package:servitools_app/models/cuidades.dart';
+import 'package:servitools_app/models/userProfesionales.dart';
+import 'package:provider/provider.dart';
 class DatabaseService{
   final String uid;
   DatabaseService({this.uid});
@@ -9,7 +11,7 @@ class DatabaseService{
   final CollectionReference ServitoolsClienteColletion = Firestore.instance.collection('registerCliente');
   final CollectionReference ServitoolsListasColletion = Firestore.instance.collection('Listas');
 
-  Future updateUserData( String nombreUsuario,
+  Future updateUserData(String uid, String nombreUsuario,
       String apellidos,
       String ubicacion,
       String nombreServicio,
@@ -20,6 +22,7 @@ class DatabaseService{
       num rtn,
       bool domicilio) async{
     return await ServitoolsColletion.document(uid).setData({
+      'uid': uid,
       'nombreUsuario' : nombreUsuario,
       'apellidos' : apellidos,
       'ubicacion' : ubicacion ,
@@ -33,13 +36,14 @@ class DatabaseService{
 
     });
   }
-  Future updateUserDataCliente( String nombreUsuario,
+  Future updateUserDataCliente(String uid, String nombreUsuario,
       String apellidos,
       String ubicacion,
       num telefono,
-      String fechaNacimiento
+      DateTime fechaNacimiento
      ) async{
     return await ServitoolsClienteColletion.document(uid).setData({
+      'uid': uid,
       'nombreUsuario' : nombreUsuario,
       'apellidos' : apellidos,
       'ubicacion' : ubicacion ,
@@ -52,11 +56,29 @@ class DatabaseService{
   List<Register> _registerlistfromSnapshot(QuerySnapshot snapshot){
     return snapshot.documents.map((doc){
       return Register(
-        nombre: doc.data['nombre'] ?? '',
-        password: doc.data['password'] ?? ''
+          nombreUsuario: doc.data['nombre'] ?? ''
       );
     }).toList();
   }
+  ///Lista de profesionales
+  List<listProfesionales> _registerlistProfesionalesfromSnapshot(QuerySnapshot snapshot){
+    return snapshot.documents.map((doc){
+      return listProfesionales(
+          uid: doc.data['nombreUsuario'] ?? '' ,
+          nombreUsuario: doc.data['nombreUsuario'] ?? '',
+          apellidos: doc.data['apellidos'] ?? '',
+          nombreServicio: doc.data['nombreServicio'] ?? '',
+          orientacion: doc.data['orientacion'] ?? '',
+          ubicacion: doc.data['ubicacion'] ?? '',
+          direccion: doc.data['direccion'] ?? '',
+          telefono: doc.data['telefono'] ?? '',
+          domicilio: doc.data['domicilio'] ?? '',
+          fundacion: doc.data['fundacion'] ?? '',
+          calificacion: doc.data['calificacion'] ?? ''
+      );
+    }).toList();
+  }
+  ///fin
 
   List<ListaCuidades> _listCuidadfromSnapshot(QuerySnapshot snapshot){
     return snapshot.documents.map((doc){
@@ -79,5 +101,12 @@ class DatabaseService{
   Stream<List<ListaCuidades>> get listaCuidades{
     return ServitoolsListasColletion.snapshots()
         .map(_listCuidadfromSnapshot);
+  }
+  Stream<List<listProfesionales>> get listaProfesionales{
+    return ServitoolsColletion.snapshots()
+        .map(_registerlistProfesionalesfromSnapshot);
+  }
+  getDataProfesionales() async{
+    return await Firestore.instance.collection('register').getDocuments();
   }
 }

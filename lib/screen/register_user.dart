@@ -25,6 +25,9 @@ class _RegisteruserState extends State<Registeruser> {
   final _telefonoController = TextEditingController();
   final _direccionController = TextEditingController();
   final _rtnController = TextEditingController();
+  final _apellidos = TextEditingController();
+  final _ubicacion= TextEditingController();
+  final _nombreservicio= TextEditingController();
   TextEditingController _dateEditingController = TextEditingController();
   DateTime _fechafundacion = DateTime.now();
 
@@ -68,15 +71,7 @@ class _RegisteruserState extends State<Registeruser> {
               servicioDomicilio
           );
           if(result== null){
-            setState(() => _errorMessage = 'Cuenta invalida');
-            Fluttertoast.showToast(
-                msg: _errorMessage,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+
           }else{ Navigator.pushNamed(context,'/home');}
 
         }
@@ -107,10 +102,12 @@ class _RegisteruserState extends State<Registeruser> {
     _emailController.dispose();
     _passwordController.dispose();
     _nombreController.dispose();
-    _nombreController.dispose();
+    _apellidos.dispose();
     _telefonoController.dispose();
     _direccionController.dispose();
     _rtnController.dispose();
+    _ubicacion.dispose();
+    _nombreservicio.dispose();
     super.dispose();
   }
 
@@ -268,6 +265,7 @@ class _RegisteruserState extends State<Registeruser> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _apellidos,
         maxLines: 1,
         keyboardType: TextInputType.text,
         //autofocus: false,
@@ -284,8 +282,10 @@ class _RegisteruserState extends State<Registeruser> {
   }
   Widget showUbicacionInput() {
     return Padding(
+
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _ubicacion,
         maxLines: 1,
         keyboardType: TextInputType.text,
         //autofocus: false,
@@ -304,6 +304,7 @@ class _RegisteruserState extends State<Registeruser> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: TextFormField(
+        controller: _nombreservicio,
         maxLines: 1,
         keyboardType: TextInputType.text,
       //  autofocus: false,

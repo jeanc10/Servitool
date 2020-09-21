@@ -16,6 +16,7 @@ class Register extends StatefulWidget{
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  DateTime _fechafundacion = DateTime.now();
   String email='',nombreUsuario='',apellido='',ubicacion='',nombreServicio='',orientacion='';
   String password='',direccion='',error='',fundacion='o';
   num telefono,rtn;
@@ -59,7 +60,7 @@ class _RegisterState extends State<Register> {
               apellido,
               ubicacion,
               telefono,
-              'fecha'
+              _fechafundacion
           );
           if(result== null){
             setState(() => _errorMessage = 'Cuenta invalida');
@@ -172,7 +173,7 @@ class _RegisterState extends State<Register> {
               showUbicacionInput(),
 
               showTelefonoInput(),
-              //showFechaFundacionInput(),
+              showFechaFundacionInput(context),
 
               showPrimaryButton(context),
               showErrorMessage(),
@@ -305,6 +306,31 @@ class _RegisterState extends State<Register> {
         onSaved: (value) => telefono = num.parse(value)
       ),
     );
+  }
+  Widget showFechaFundacionInput(BuildContext context) {
+    String _formateDate = new DateFormat.yMMMd().format(_fechafundacion);
+
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+        child:
+        TextFormField(
+          readOnly: false,
+          controller: _dateEditingController,
+          decoration:
+          InputDecoration(hintText: 'Fecha de nacimiento: $_formateDate' ,prefixIcon: Icon(Icons.calendar_today)),
+          onTap: () async {
+            var date = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(1940),
+                lastDate: DateTime.now());
+            if(date!=null){
+              setState(() {
+                _fechafundacion=date;
+              });
+            }
+          },
+        ));
   }
 //  Widget showFechaFundacionInput() {
 //    return Padding(

@@ -50,11 +50,11 @@ class AuthService {
       String apellidos,
       String ubicacion,
       num telefono,
-      String fechanacimiento    ) async{
+      DateTime fechanacimiento    ) async{
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user=result.user;
-      await DatabaseService(uid: user.uid).updateUserDataCliente(nombreUsuario, apellidos, ubicacion, telefono, fechanacimiento);
+      await DatabaseService(uid: user.uid).updateUserDataCliente(user.uid,nombreUsuario, apellidos, ubicacion, telefono, fechanacimiento);
       return _userFromFireBaseUser(user);
 
     }catch(e){
@@ -78,13 +78,13 @@ class AuthService {
 
       ) async{
     try{
-      print('entro1');
+
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      print('entro2');
+
       FirebaseUser user=result.user;
-      print('entro3');
-      await DatabaseService(uid: user.uid).updateUserData(nombreUsuario, apellidos, ubicacion, nombreServicio, orientacion, telefono, fundacion, direccion, rtn,domicilio);
-      print('entro4');
+
+      await DatabaseService(uid: user.uid).updateUserData(user.uid,nombreUsuario, apellidos, ubicacion, nombreServicio, orientacion, telefono, fundacion, direccion, rtn,domicilio);
+
       return _userFromFireBaseUser(user);
 
     }catch(e){

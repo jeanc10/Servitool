@@ -3,7 +3,10 @@ import 'package:servitools_app/models/user.dart';
 import 'package:servitools_app/screen/home/_home.dart';
 import 'package:servitools_app/screen/authentication.dart';
 import 'package:provider/provider.dart';
+import 'package:servitools_app/screen/home/homeDash.dart';
 import 'package:servitools_app/screen/login_screen.dart';
+import 'package:servitools_app/screen/home/DashHome.dart';
+import 'package:servitools_app/screen/home/prueba.dart';
 
 class Wrapper extends StatelessWidget{
   @override
@@ -14,7 +17,7 @@ class Wrapper extends StatelessWidget{
       return LoginScreen();
     }
     else{
-      return HomePage();
+      return DashHome_();
     }
   }
 }

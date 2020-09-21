@@ -16,9 +16,8 @@ class _RegisterListState extends State<RegisterList> {
 //    for(var doc in register.documents){
 //      print(doc.data);
 //    }
-    register.forEach((Register) { 
-      print(Register.nombre);
-      print(Register.password);
+    register.forEach((Register) {
+      print(Register.nombreUsuario);
     });
     return Container();
   }

@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:servitools_app/models/register.dart';
 import 'package:servitools_app/models/cuidades.dart';
+import 'package:servitools_app/models/register.dart';
 import 'package:servitools_app/models/userProfesionales.dart';
-import 'package:provider/provider.dart';
 class DatabaseService{
   final String uid;
   DatabaseService({this.uid});
@@ -20,7 +18,7 @@ class DatabaseService{
       DateTime fundacion,
       String direccion,
       num rtn,
-      bool domicilio) async{
+      bool domicilio, String calificacion) async{
     return await ServitoolsColletion.document(uid).setData({
       'uid': uid,
       'nombreUsuario' : nombreUsuario,
@@ -32,7 +30,8 @@ class DatabaseService{
       'fundacion': fundacion ,
       'direccion': direccion ,
       'rtn': rtn,
-      'domicilio': domicilio
+      'domicilio': domicilio,
+      'calificacion': calificacion
 
     });
   }

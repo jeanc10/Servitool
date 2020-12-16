@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:servitools_app/screen/sign_in.dart';
 import 'package:servitools_app/services/auth.dart';
-import 'globals.dart' as globals;
-import 'package:servitools_app/extensions.dart';
 class Registeruser extends StatefulWidget{
   @override
 
@@ -68,7 +65,8 @@ class _RegisteruserState extends State<Registeruser> {
               _fechafundacion,
               direccion,
               rtn,
-              servicioDomicilio
+              servicioDomicilio,
+
           );
           if(result== null){
 
@@ -183,9 +181,11 @@ class _RegisteruserState extends State<Registeruser> {
               //_getDatePickerEnabled(),
               showDireccionInput(),
               showRTNInput(),
+              showSelectorImagen(context),
               showDomicilioInput(),
               showPrimaryButton(context),
                showErrorMessage(),
+
             ],
           ),
         ));
@@ -395,6 +395,22 @@ class _RegisteruserState extends State<Registeruser> {
                 _fechafundacion=date;
               });
             }
+          },
+        ));
+  }
+  Widget showSelectorImagen(BuildContext context)  {
+    final picker = ImagePicker();
+
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+        child:
+        TextFormField(
+          readOnly: false,
+          controller: _dateEditingController,
+          decoration:
+          InputDecoration(hintText: 'Foto de perfil'),
+          onTap: () async {
+            final pickedFile = await picker.getImage(source: ImageSource.gallery);
           },
         ));
   }

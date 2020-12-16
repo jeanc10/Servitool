@@ -83,7 +83,7 @@ class AuthService {
 
       FirebaseUser user=result.user;
 
-      await DatabaseService(uid: user.uid).updateUserData(user.uid,nombreUsuario, apellidos, ubicacion, nombreServicio, orientacion, telefono, fundacion, direccion, rtn,domicilio);
+      await DatabaseService(uid: user.uid).updateUserData(user.uid,nombreUsuario, apellidos, ubicacion, nombreServicio, orientacion, telefono, fundacion, direccion, rtn,domicilio,"0");
 
       return _userFromFireBaseUser(user);
 
